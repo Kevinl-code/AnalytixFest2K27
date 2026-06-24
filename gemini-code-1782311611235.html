@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-black">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANALYTIX FEST 2K27 | The Veil is Thin</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'stranger': ['Creepster', 'cursive'],
+                        'tech': ['Orbitron', 'sans-serif'],
+                    },
+                    colors: {
+                        'netflix-red': '#E50914',
+                        'upside-blue': '#0a192f',
+                    },
+                    backgroundImage: {
+                        'normal-world': "url('./character.png')",
+                        'upside-down': "url('./veckna.png')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body, html {
+            overflow-x: hidden;
+            cursor: crosshair;
+            touch-action: pan-y;
+        }
+        .loader-pulse { animation: text-flicker 3s linear infinite; }
+        @keyframes text-flicker {
+            0%, 19.9%, 22%, 62.9%, 64%, 64.9%, 70%, 100% { opacity: 0.99; text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000; }
+            20%, 21.9%, 63%, 63.9%, 65%, 69.9% { opacity: 0.4; text-shadow: none; }
+        }
+        #upside-down-layer {
+            --clip-x: 50%;
+            --clip-y: 50%;
+            --clip-radius: 0px;
+            clip-path: circle(var(--clip-radius) at var(--clip-x) var(--clip-y));
+            will-change: clip-path, --clip-radius, --clip-x, --clip-y;
+            filter: drop-shadow(0 0 25px rgba(255, 0, 0, 0.9));
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #E50914; }
+    </style>
+</head>
+
+<body class="bg-black text-white selection:bg-red-600 selection:text-white font-tech min-h-screen">
+
+    <div id="loader" class="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center p-4 text-center">
+        <h1 class="font-stranger text-5xl sm:text-7xl md:text-9xl text-netflix-red tracking-widest loader-pulse mb-4">
+            ANALYTIX FEST
+        </h1>
+        <div class="font-tech text-red-800 tracking-[0.3em] text-xs sm:text-sm uppercase animate-pulse">
+            Establishing communication with the other side...
+        </div>
+    </div>
+
+    <div id="canvas-container" class="fixed inset-0 z-0 pointer-events-none"></div>
+    <div id="normal-layer" class="fixed inset-0 z-10 bg-cover bg-center bg-no-repeat bg-normal-world grayscale-[40%] brightness-[0.35]"></div>
+    <div id="upside-down-layer" class="fixed inset-0 z-20 bg-cover bg-center bg-no-repeat bg-upside-down contrast-125 brightness-[0.65]">
+        <div class="absolute inset-0 bg-red-950/30 mix-blend-overlay"></div>
+    </div>
+    <div class="fixed inset-0 z-30 pointer-events-none bg-[radial-gradient(circle_at_center,transparent_30%,#000_120%)]"></div>
+
+    <div class="relative z-40 min-h-screen flex flex-col justify-between p-4 sm:p-6 md:p-8">
+        
+        <header class="w-full max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 border-b border-white/10 pb-4 backdrop-blur-sm bg-black/20 p-4 rounded-xl">
+            <div class="text-center md:text-left">
+                <span class="text-xs tracking-[0.4em] text-red-500 uppercase">Department of Computer Applications</span>
+                <h1 class="font-stranger text-3xl sm:text-4xl text-netflix-red tracking-wide drop-shadow-[0_0_10px_rgba(230,9,20,0.5)]">ANALYTIX 2K27</h1>
+            </div>
+            <nav class="flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm tracking-widest">
+                <button onclick="switchTab('home')" class="nav-btn px-3 py-2 text-netflix-red border border-netflix-red bg-red-950/20 rounded-md transition-all">PORTAL</button>
+                <button onclick="switchTab('events')" class="nav-btn px-3 py-2 text-white/70 hover:text-white border border-white/10 hover:border-white/30 rounded-md transition-all">EVENTS</button>
+                <button onclick="switchTab('rules')" class="nav-btn px-3 py-2 text-white/70 hover:text-white border border-white/10 hover:border-white/30 rounded-md transition-all">RULES</button>
+                <button onclick="switchTab('access')" class="nav-btn px-3 py-2 text-white/70 hover:text-white border border-white/10 hover:border-white/30 rounded-md transition-all">ACCESS UNIT</button>
+            </nav>
+        </header>
+
+        <main class="w-full max-w-5xl mx-auto my-auto py-8">
+            
+            <div id="tab-home" class="tab-content flex flex-col items-center justify-center text-center">
+                <h2 class="font-stranger text-6xl sm:text-8xl md:text-9xl text-netflix-red drop-shadow-[0_0_30px_rgba(255,0,0,0.8)] mb-2 animate-pulse">SEASON 5</h2>
+                <p class="text-white text-lg sm:text-2xl tracking-[0.3em] uppercase max-w-xl mb-4">THE RIFT IS OPENING IN TAMIL NADU</p>
+                <p class="text-white/60 text-xs sm:text-sm tracking-widest max-w-md uppercase mb-8 leading-relaxed">Join the ultimate inter-collegiate battle. Drag across the screen to reveal the hidden dimension.</p>
+                <div class="flex flex-col sm:flex-row gap-4 w-full justify-center px-4">
+                    <button onclick="switchTab('events')" class="bg-red-700 hover:bg-netflix-red px-8 py-3 rounded text-sm font-bold tracking-[0.2em] transition-all duration-300 shadow-[0_0_15px_rgba(229,9,20,0.4)]">EXPLORE EVENTS</button>
+                    <button onclick="switchTab('access')" class="border border-white/20 hover:border-white/60 bg-black/40 backdrop-blur-sm px-8 py-3 rounded text-sm font-bold tracking-[0.2em] transition-all duration-300">REGISTER COMPONENT</button>
+                </div>
+            </div>
+
+            <div id="tab-events" class="tab-content hidden opacity-0">
+                <div class="text-center mb-8">
+                    <h3 class="text-2xl tracking-[0.4em] text-red-500 uppercase font-bold">Event Matrix</h3>
+                    <p class="text-xs text-white/50 mt-1 uppercase">Hover/Touch across cards to reveal Upside Down (Non-Tech) variants</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 px-4">
+                    <div class="group relative bg-black/60 border border-white/10 p-6 rounded-xl overflow-hidden backdrop-blur-md hover:border-red-600/50 transition-all duration-500 min-h-[180px]">
+                        <div class="absolute inset-0 p-6 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4">
+                            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase">[ TECH ]</span>
+                            <h4 class="text-xl font-bold tracking-wide mt-2 text-white">BYTE BUSTERS</h4>
+                            <p class="text-xs text-white/60 mt-2 leading-relaxed uppercase">Present your revolutionary theories, research matrices, and development ideas to our technical panel.</p>
+                        </div>
+                        <div class="absolute inset-0 p-6 opacity-0 -translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 bg-red-950/20 border border-red-900/50 rounded-xl flex flex-col justify-center">
+                            <span class="text-xs font-bold text-red-500 tracking-widest uppercase">[ NON-TECH ALTERNATE ]</span>
+                            <h4 class="text-xl font-bold tracking-wide mt-1 text-netflix-red font-stranger">THE HELLFIRE CLUB</h4>
+                            <p class="text-xs text-white/80 mt-1 uppercase leading-relaxed">Survival of the fittest. High-octane mobile gaming battleground (BGMI / Valorant mobile matches).</p>
+                        </div>
+                    </div>
+
+                    <div class="group relative bg-black/60 border border-white/10 p-6 rounded-xl overflow-hidden backdrop-blur-md hover:border-red-600/50 transition-all duration-500 min-h-[180px]">
+                        <div class="absolute inset-0 p-6 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4">
+                            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase">[ TECH ]</span>
+                            <h4 class="text-xl font-bold tracking-wide mt-2 text-white">CODE RED</h4>
+                            <p class="text-xs text-white/60 mt-2 leading-relaxed uppercase">Debug the anomalies, fix broken modules, and compile functional code sequences against a countdown timer.</p>
+                        </div>
+                        <div class="absolute inset-0 p-6 opacity-0 -translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 bg-red-950/20 border border-red-900/50 rounded-xl flex flex-col justify-center">
+                            <span class="text-xs font-bold text-red-500 tracking-widest uppercase">[ NON-TECH ALTERNATE ]</span>
+                            <h4 class="text-xl font-bold tracking-wide mt-1 text-netflix-red font-stranger">MIND FLAYER</h4>
+                            <p class="text-xs text-white/80 mt-1 uppercase leading-relaxed">Adapt Tunes & Surprise tasks. Adapt your physical movements and creative instincts to sudden runtime updates.</p>
+                        </div>
+                    </div>
+
+                    <div class="group relative bg-black/60 border border-white/10 p-6 rounded-xl overflow-hidden backdrop-blur-md hover:border-red-600/50 transition-all duration-500 min-h-[180px] md:col-span-2">
+                        <div class="absolute inset-0 p-6 transition-all duration-500 group-hover:opacity-0 group-hover:translate-y-4 flex flex-col justify-center">
+                            <span class="text-xs font-bold text-cyan-400 tracking-widest uppercase">[ TECH ]</span>
+                            <h4 class="text-xl font-bold tracking-wide mt-1 text-white">WEB WEAVER</h4>
+                            <p class="text-xs text-white/60 mt-1 leading-relaxed uppercase">Architect an interactive frontend canvas using utility constraints. Creativity meets clean performance metrics.</p>
+                        </div>
+                        <div class="absolute inset-0 p-6 opacity-0 -translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0 bg-red-950/20 border border-red-900/50 rounded-xl flex flex-col justify-center">
+                            <span class="text-xs font-bold text-red-500 tracking-widest uppercase">[ NON-TECH ALTERNATE ]</span>
+                            <h4 class="text-xl font-bold tracking-wide mt-1 text-netflix-red font-stranger">REEL 4 (CINEMATOGRAPHY)</h4>
+                            <p class="text-xs text-white/80 mt-1 uppercase leading-relaxed">Capture the essence of mysterious occurrences across campus bounds. Short films, mockumentaries, and transitions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-rules" class="tab-content hidden opacity-0 max-w-2xl mx-auto px-4">
+                <div class="bg-black/70 border border-red-900/40 p-6 sm:p-8 rounded-xl backdrop-blur-md shadow-[0_0_30px_rgba(229,9,20,0.15)]">
+                    <h3 class="text-2xl text-netflix-red tracking-widest font-bold mb-6 text-center uppercase border-b border-red-900/30 pb-3">SURVIVAL INSTRUCTIONS</h3>
+                    <ul class="space-y-4 text-xs sm:text-sm tracking-wide text-white/90">
+                        <li class="flex gap-3"><span class="text-red-500">01 //</span> ALL PARTICIPANTS MUST EXTRACT A VALID ID CREDENTIAL FROM THEIR INTENDED INSTITUTION.</li>
+                        <li class="flex gap-3"><span class="text-red-500">02 //</span> MAX OF 3 AGENTS PER TECH/NON-TECH CLUSTER SQUAD ALLOWED.</li>
+                        <li class="flex gap-3"><span class="text-red-500">03 //</span> DEPLOYMENT STARTS PROMPTLY AT 09:00 HOURS. LATE ENTRIES WILL BE CLOSED PERMANENTLY.</li>
+                        <li class="flex gap-3"><span class="text-red-500">04 //</span> THE DECISIONS DECLARED BY THE CENTRAL DEMOGORGON JURY LAB ARE ABSOLUTE AND UNCHALLENGEABLE.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="tab-access" class="tab-content hidden opacity-0 max-w-md mx-auto px-4">
+                <div class="bg-black/80 border border-white/10 p-6 rounded-xl backdrop-blur-md">
+                    <div class="flex border-b border-white/10 mb-6 text-xs sm:text-sm tracking-widest">
+                        <button onclick="toggleAccessForm('register')" id="btn-form-register" class="flex-1 pb-3 text-red-500 border-b-2 border-red-600 font-bold transition-all">REGISTRATION FORM</button>
+                        <button onclick="toggleAccessForm('auth')" id="btn-form-auth" class="flex-1 pb-3 text-white/40 transition-all">SIGNIN ACCESS</button>
+                    </div>
+
+                    <form id="form-register" onsubmit="event.preventDefault(); alert('Registration Matrix Stored Successfully.');" class="space-y-4">
+                        <div>
+                            <label class="block text-[10px] tracking-widest text-white/50 uppercase mb-1">Agent Name</label>
+                            <input type="text" required class="w-full bg-neutral-900 border border-white/10 focus:border-red-600 p-2.5 rounded text-sm text-white outline-none transition-all">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-[10px] tracking-widest text-white/50 uppercase mb-1">Contact Terminal</label>
+                                <input type="tel" required placeholder="Mobile" class="w-full bg-neutral-900 border border-white/10 focus:border-red-600 p-2.5 rounded text-sm text-white outline-none transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] tracking-widest text-white/50 uppercase mb-1">Institution Hub</label>
+                                <input type="text" required placeholder="College Name" class="w-full bg-neutral-900 border border-white/10 focus:border-red-600 p-2.5 rounded text-sm text-white outline-none transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] tracking-widest text-white/50 uppercase mb-1">Primary Dimension</label>
+                            <select class="w-full bg-neutral-900 border border-white/10 focus:border-red-600 p-2.5 rounded text-sm text-white outline-none transition-all">
+                                <option class="bg-black">TECHNICAL MATRIX CLUSTER</option>
+                                <option class="bg-black">NON-TECHNICAL DIMENSION</option>
+                                <option class="bg-black">DUAL INTEGRATED PROTOCOL (BOTH)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full bg-red-700 hover:bg-netflix-red py-3 text-xs tracking-widest font-bold uppercase transition-all duration-300 shadow-[0_0_15px_rgba(229,9,20,0.3)]">SUBMIT SQUAD MATRIX</button>
+                    </form>
+
+                    <form id="form-auth" onsubmit="event.preventDefault(); alert('Access Vector Verified.');" class="space-y-4 hidden opacity-0">
+                        <div>
+                            <label class="block text-[10px] tracking-widest text-white/50 uppercase mb-1">Agent Identity Email</label>
+                            <input type="email" required placeholder="agent@dimension.io" class="w-full bg-neutral-900 border border-white/10 focus:border-red-600 p-2.5 rounded text-sm text-white outline-none transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] tracking-widest text-white/50 uppercase mb-1">Access Key Passphrase</label>
+                            <input type="password" required class="w-full bg-neutral-900 border border-white/10 focus:border-red-600 p-2.5 rounded text-sm text-white outline-none transition-all">
+                        </div>
+                        <div class="flex items-center justify-between text-[10px] tracking-wide text-white/40">
+                            <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" class="accent-red-600"> Remember Unit</label>
+                            <a href="#" class="hover:text-red-500">Lost Access Key?</a>
+                        </div>
+                        <button type="submit" class="w-full bg-transparent hover:bg-white border border-white/20 hover:text-black py-3 text-xs tracking-widest font-bold uppercase transition-all duration-300">REQUEST ACCESS AUTHORITY</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <footer class="w-full max-w-6xl mx-auto border-t border-white/5 pt-4 text-center text-[10px] tracking-[0.3em] text-white/30 uppercase">
+            Designed for AnalytixFest2K27 // System Status: Veil Vulnerable
+        </footer>
+    </div>
+
+    <script>
+        // --- THREE.JS SPORES DISPERSAL ENGINE ---
+        let scene, camera, renderer, particles, particleCount;
+        function initThreeJS() {
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2(0x000000, 0.0018);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 150;
+
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            container.appendChild(renderer.domElement);
+
+            particleCount = window.innerWidth < 640 ? 250 : 700;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            const velocities = [];
+
+            for (let i = 0; i < particleCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 500;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 500;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 500;
+                velocities.push({
+                    x: (Math.random() - 0.5) * 0.15,
+                    y: (Math.random() * 0.25) + 0.1,
+                    z: (Math.random() - 0.5) * 0.15
+                });
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({
+                color: 0xff0000,
+                size: window.innerWidth < 640 ? 2.5 : 1.8,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                const posAttr = particles.geometry.attributes.position;
+                for (let i = 0; i < particleCount; i++) {
+                    posAttr.array[i * 3] += velocities[i].x;
+                    posAttr.array[i * 3 + 1] += velocities[i].y;
+                    posAttr.array[i * 3 + 2] += velocities[i].z;
+                    if (posAttr.array[i * 3 + 1] > 250) posAttr.array[i * 3 + 1] = -250;
+                }
+                posAttr.needsUpdate = true;
+                particles.rotation.y += 0.0008;
+                renderer.render(scene, camera);
+            }
+            animate();
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        // --- RIFT MASK TRACKING INTERACTION ---
+        function initInteractions() {
+            const revealLayer = document.getElementById('upside-down-layer');
+            const normalLayer = document.getElementById('normal-layer');
+            let moveTimeout;
+
+            function trackPointer(clientX, clientY) {
+                const defaultRadius = window.innerWidth < 640 ? '100px' : '170px';
+                gsap.to(revealLayer, { '--clip-x': `${clientX}px`, '--clip-y': `${clientY}px`, duration: 0.35, ease: "power2.out" });
+                
+                const centerX = window.innerWidth / 2, centerY = window.innerHeight / 2;
+                const mX = (clientX - centerX) / centerX, mY = (clientY - centerY) / centerY;
+                gsap.to(normalLayer, { x: mX * -12, y: mY * -6, duration: 1 });
+                gsap.to(revealLayer, { x: mX * -18, y: mY * -10, duration: 1 });
+
+                clearTimeout(moveTimeout);
+                gsap.to(revealLayer, { '--clip-radius': defaultRadius, duration: 0.25 });
+                moveTimeout = setTimeout(() => {
+                    gsap.to(revealLayer, { '--clip-radius': '0px', duration: 0.6, ease: "power3.in" });
+                }, 750);
+            }
+
+            document.addEventListener('mousemove', (e) => trackPointer(e.clientX, e.clientY));
+            document.addEventListener('touchmove', (e) => { if(e.touches.length > 0) trackPointer(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+        }
+
+        // --- RETRO TERMINAL INTERFACE NAVIGATION TABS ---
+        function switchTab(tabId) {
+            const activeTab = document.getElementById(`tab-${tabId}`);
+            if (!activeTab || !activeTab.classList.contains('hidden')) return;
+
+            // Update navbar styling state
+            const buttons = document.querySelectorAll('nav button');
+            buttons.forEach(btn => {
+                if(btn.getAttribute('onclick').includes(tabId)) {
+                    btn.className = "nav-btn px-3 py-2 text-netflix-red border border-netflix-red bg-red-950/20 rounded-md transition-all";
+                } else {
+                    btn.className = "nav-btn px-3 py-2 text-white/70 hover:text-white border border-white/10 hover:border-white/30 rounded-md transition-all";
+                }
+            });
+
+            // Animate transition between elements cleanly
+            gsap.to('.tab-content:not(.hidden)', { opacity: 0, duration: 0.2, onComplete: () => {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+                activeTab.classList.remove('hidden');
+                gsap.to(activeTab, { opacity: 1, y: 0, duration: 0.4, clearProps: "all" });
+            }});
+        }
+
+        // --- REGISTRATION / AUTH TOGGLE INSIDE ACCESS TAB ---
+        function toggleAccessForm(mode) {
+            const regForm = document.getElementById('form-register');
+            const authForm = document.getElementById('form-auth');
+            const btnReg = document.getElementById('btn-form-register');
+            const btnAuth = document.getElementById('btn-form-auth');
+
+            if(mode === 'register') {
+                btnReg.className = "flex-1 pb-3 text-red-500 border-b-2 border-red-600 font-bold transition-all";
+                btnAuth.className = "flex-1 pb-3 text-white/40 transition-all";
+                gsap.to(authForm, { opacity: 0, duration: 0.15, onComplete: () => {
+                    authForm.classList.add('hidden');
+                    regForm.classList.remove('hidden');
+                    gsap.to(regForm, { opacity: 1, duration: 0.25 });
+                }});
+            } else {
+                btnAuth.className = "flex-1 pb-3 text-red-500 border-b-2 border-red-600 font-bold transition-all";
+                btnReg.className = "flex-1 pb-3 text-white/40 transition-all";
+                gsap.to(regForm, { opacity: 0, duration: 0.15, onComplete: () => {
+                    regForm.classList.add('hidden');
+                    authForm.classList.remove('hidden');
+                    gsap.to(authForm, { opacity: 1, duration: 0.25 });
+                }});
+            }
+        }
+
+        // --- LAUNCH TRIGGER LIFECYCLE ---
+        window.addEventListener('load', () => {
+            initThreeJS();
+            const loader = document.getElementById('loader');
+            gsap.to(loader, { opacity: 0, duration: 1, delay: 1, onComplete: () => { loader.remove(); initInteractions(); } });
+        });
+    </script>
+</body>
+</html>
